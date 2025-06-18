@@ -1,0 +1,99 @@
+/* Container */
+.driver-container {
+  min-height: 100vh;
+  background: linear-gradient(to right, #1e3c72, #2a5298);
+  padding: 30px 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: white;
+}
+
+/* Top Nav Button */
+.top-bar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 20px;
+}
+
+.nav-btn {
+  padding: 10px 20px;
+  border-radius: 10px;
+  border: none;
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.nav-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Section Title */
+.section-title {
+  text-align: center;
+  font-size: 28px;
+  margin-bottom: 30px;
+}
+
+/* Pickup List Layout */
+.pickup-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+}
+
+/* Card Styling */
+.pickup-card {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 15px;
+  padding: 20px;
+  width: 300px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease;
+}
+
+.pickup-card:hover {
+  transform: scale(1.03);
+}
+
+/* Text Styles */
+.pickup-card h3 {
+  margin-top: 0;
+  font-size: 22px;
+}
+
+.pickup-card p {
+  margin: 8px 0;
+  font-size: 15px;
+}
+
+/* Status Colors */
+.status {
+  font-weight: bold;
+}
+
+.status.pending {
+  color: #fcd34d; /* yellow */
+}
+
+.status.completed {
+  color: #4ade80; /* green */
+}
+
+.status.cancelled {
+  color: #f87171; /* red */
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .pickup-card {
+    width: 90%;
+  }
+
+  .nav-btn {
+    width: 100px;
+  }
+}

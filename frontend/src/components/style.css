@@ -1,0 +1,123 @@
+
+.glass-form {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 2rem;
+  width: 100%;
+  max-width: 500px;
+  backdrop-filter: blur(15px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.glass-form h2 {
+  text-align: center;
+  font-weight: 600;
+  color: white;
+}
+
+.glass-form input,
+.glass-form textarea {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  padding: 0.8rem;
+  border-radius: 8px;
+  color: white;
+  outline: none;
+}
+
+.glass-form input::placeholder,
+.glass-form textarea::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.glass-form button {
+  background: #00b894;
+  color: white;
+  border: none;
+  padding: 0.9rem;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.glass-form button:hover {
+  background: #019875;
+}
+
+
+
+.partner-form-container,
+.pickup-form-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 2rem;
+ border-radius: 10%;
+  /* Beautiful gradient background as fallback */
+    background: linear-gradient(135deg, #01539a 0%, #9fcee6 100%);
+
+  /* Optional image overlay for extra texture */
+
+  background-blend-mode: overlay;
+  background-size: cover;
+}
+
+.glass-form {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 2rem;
+  width: 100%;
+  max-width: 500px;
+  backdrop-filter: blur(15px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: rgb(0, 0, 0);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.glass-form h2 {
+  text-align: center;
+  font-weight: 600;
+  color: white;
+}
+
+.glass-form input,
+.glass-form textarea {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  padding: 0.8rem;
+  border-radius: 8px;
+  color: white;
+  outline: none;
+}
+
+.glass-form input::placeholder,
+.glass-form textarea::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.glass-form button {
+  background: #00cec9;
+  color: white;
+  border: none;
+  padding: 0.9rem;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.glass-form button:hover {
+  background: #01a3a4;
+}
+
+
