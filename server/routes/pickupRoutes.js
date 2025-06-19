@@ -7,7 +7,7 @@ const {
   updatePickup
 } = require('../controllers/pickupController');
 
-router.post('/', createPickup);
+router.post('/createpickup', createPickup);
 router.get('/', getAllPickups);
 router.delete('/:id', deletePickup); // ✅ Only Admin panel uses this
 router.patch("/accept/:id",updatePickup)

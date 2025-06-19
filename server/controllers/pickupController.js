@@ -2,12 +2,58 @@ const Pickup = require('../models/Pickup');
 
 exports.createPickup = async (req, res) => {
   try {
-    const newPickup = await Pickup.create(req.body);
-    res.status(201).json(newPickup);
+    const {
+      address,
+      pickupTime,
+      paymentMethod,
+      recyclable,
+      nonRecyclable,
+    } = req.body;
+
+    if (!address || !pickupTime || !paymentMethod) {
+      return res.status(400).json({ error: "Address, pickup time, and payment method are required." });
+    }
+
+    const recyclableKg = parseFloat(recyclable?.kg);
+    const isRecyclableValid =
+      recyclable?.item &&
+      !isNaN(recyclableKg) &&
+      recyclableKg > 0;
+
+    const nonRecyclableKg = parseFloat(nonRecyclable?.kg);
+    const isNonRecyclableValid =
+      nonRecyclable?.item &&
+      !isNaN(nonRecyclableKg) &&
+      nonRecyclableKg > 0;
+
+    if (!isRecyclableValid && !isNonRecyclableValid) {
+      return res.status(400).json({
+        error: "At least one valid waste type with weight must be provided.",
+      });
+    }
+
+    const newPickup = new Pickup({
+      address,
+      pickupTime,
+      paymentMethod,
+      recyclable: isRecyclableValid ? recyclable : null,
+      nonRecyclable: isNonRecyclableValid ? nonRecyclable : null,
+    });
+
+    const savedPickup = await newPickup.save();
+    return res.status(201).json({
+      message: "Pickup request created",
+      data: savedPickup,
+    });
+
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    console.error("Pickup creation failed:", err);
+    return res.status(500).json({ error: "Server error. Please try again later." });
   }
 };
+
+
+
 
 exports.getAllPickups = async (req, res) => {
   try {
