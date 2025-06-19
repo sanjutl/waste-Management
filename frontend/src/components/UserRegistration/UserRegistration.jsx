@@ -1,10 +1,14 @@
-import { React, useState } from "react";
-import axios from 'axios'
-import styles from "./userReg.module.css"
-import loginImage from "../../assets/kerala.jpg"; // Adjust the path as per your folder structure
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from 'axios';
+import styles from "./userReg.module.css";
+import loginImage from "../../assets/kerala.jpg";
 
 function UserRegistration() {
+  const navigate = useNavigate();
+
   const [form, setForm] = useState({
+    name: "",
     email: "",
     password: "",
     state: "",
@@ -16,17 +20,37 @@ function UserRegistration() {
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Submitted:", form);
-    // API logic here
+    try {
+      const res = await axios.post("http://localhost:5000/api/user/register", form); // 🔁 Update if needed
+
+      if (res.status === 201) {
+        alert("Registration successful. Redirecting to login...");
+        navigate("/userlogin"); // ✅ Navigate on success
+      } else {
+        alert(res.data.message || "Registration failed");
+      }
+    } catch (err) {
+      console.error("Registration error:", err);
+      alert(err.response?.data?.message || "An error occurred during registration");
+    }
   };
 
   return (
     <div className={styles.loginContainer}>
       <div className={styles.leftSide}>
-        <h2 className={styles.title}>Login</h2>
+        <h2 className={styles.title}>Register</h2>
         <form onSubmit={handleSubmit} className={styles.form}>
+          <label>Name</label>
+          <input
+            type="text"
+            name="name"
+            value={form.name}
+            onChange={handleChange}
+            required
+          />
+
           <label>Email</label>
           <input
             type="email"
@@ -65,10 +89,10 @@ function UserRegistration() {
         </form>
       </div>
       <div className={styles.rightSide}>
-        <img src={loginImage} alt="Login Visual" className={styles.image} />
+        <img src={loginImage} alt="Registration Visual" className={styles.image} />
       </div>
     </div>
   );
 }
 
-export default UserRegistration
+export default UserRegistration;

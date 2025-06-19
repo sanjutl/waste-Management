@@ -1,10 +1,41 @@
 import { React, useState } from "react";
 import styles from "./userlogin.module.css";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios"
+import axios from "axios";
 import loginImage from "../../assets/kerala.jpg";
 
 function UserLogin() {
+  const navigate = useNavigate();
+
+  const [form, setForm] = useState({
+    email: '',
+    password: ''
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await axios.post('http://localhost:5000/api/user/login', form); // Update if needed
+
+      if (res.status === 200 && res.data.token) {
+        // Save token to localStorage (or cookies)
+        localStorage.setItem('token', res.data.token);
+
+        alert("Login successful!");
+        navigate('/'); // 🔁 Update to your actual route
+      }
+    } catch (err) {
+      console.error("Login error:", err);
+      const message = err.response?.data?.message || "An error occurred while logging in.";
+      alert(message);
+    }
+  };
+
   return (
     <div>
       <div className={styles.containerOneUser}>
@@ -12,8 +43,7 @@ function UserLogin() {
           <div className={styles.containerTwoLeft}>
             <div className={styles.leftMain}>
               <div className={styles.logoContainer}>
-                <div className={styles.logo}>
-                </div>
+                <div className={styles.logo}></div>
               </div>
               <div className={styles.contentsContainerLeft}>
                 <div className={styles.contentsMainLeft}>
@@ -42,11 +72,7 @@ function UserLogin() {
                       </div>
 
                       <div>
-                        <label
-                          htmlFor="password1"
-                          className={styles.label}
-                          style={{ marginTop: "20px" }}
-                        >
+                        <label htmlFor="password1" className={styles.label} style={{ marginTop: "20px" }}>
                           Your password
                         </label>
                         <input
@@ -78,7 +104,7 @@ function UserLogin() {
                   </div>
                   <div className={styles.signup}>
                     <p>Don't you have an account?</p>
-                    <Link className={styles.linkStyle} to={'/phonesignup'}>Sign Up</Link>
+                    <Link className={styles.linkStyle} to={'/userreg'}>Sign Up</Link>
                   </div>
                 </div>
               </div>
