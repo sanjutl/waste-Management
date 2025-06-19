@@ -145,7 +145,8 @@ export default function RequestPickupForm() {
     }
 
     try {
-      const res = await axios.post("http://localhost:5000/api/pickups", payload);
+      const res = await axios.post("http://localhost:5000/api/pickups/createpickup", payload);
+
       alert("Pickup requested successfully!");
       console.log("Saved:", res.data);
       window.location.reload();

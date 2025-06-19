@@ -1,6 +1,6 @@
-const Pickup = require('../models/Pickup');
+// const Pickup = require('../models/Pickup');
 
-const Pickup = require('../models/pickupModel'); // adjust path as needed
+const Pickup = require('../models/Pickup.js'); // adjust path as needed
 
 exports.createPickup = async (req, res) => {
   try {
