@@ -13,11 +13,11 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/home" element={<Home />} />
         <Route path="/driver" element={<DriverPanel />} />
         <Route path="/admin-login" element={<AdminLogin />} />
         
-        <Route path="/userlogin" element={<UserLogin />} />
+        <Route path="/" element={<UserLogin />} />
         <Route path="/userreg" element={<UserRegistration />} />
         {/* <Route path="/newpage" element={<NewPage />} /> */}
         <Route

@@ -27,7 +27,7 @@ function UserLogin() {
         localStorage.setItem('token', res.data.token);
 
         alert("Login successful!");
-        navigate('/'); // 🔁 Update to your actual route
+        navigate('/home'); // 🔁 Update to your actual route
       }
     } catch (err) {
       console.error("Login error:", err);
