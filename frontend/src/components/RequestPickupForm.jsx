@@ -23,6 +23,7 @@ export default function RequestPickupForm() {
     address: "",
     pickupTime: "",
     paymentMethod: "",
+    phone: "",
   });
 
   const [recyclableItem, setRecyclableItem] = useState("");
@@ -88,22 +89,46 @@ export default function RequestPickupForm() {
 
   const handleRecyclableItemChange = (value) => {
     setRecyclableItem(value);
-    calculatePrices(value, recyclableKg, nonRecyclableItem, nonRecyclableKg, form.paymentMethod);
+    calculatePrices(
+      value,
+      recyclableKg,
+      nonRecyclableItem,
+      nonRecyclableKg,
+      form.paymentMethod
+    );
   };
 
   const handleRecyclableKgChange = (value) => {
     setRecyclableKg(value);
-    calculatePrices(recyclableItem, value, nonRecyclableItem, nonRecyclableKg, form.paymentMethod);
+    calculatePrices(
+      recyclableItem,
+      value,
+      nonRecyclableItem,
+      nonRecyclableKg,
+      form.paymentMethod
+    );
   };
 
   const handleNonRecyclableItemChange = (value) => {
     setNonRecyclableItem(value);
-    calculatePrices(recyclableItem, recyclableKg, value, nonRecyclableKg, form.paymentMethod);
+    calculatePrices(
+      recyclableItem,
+      recyclableKg,
+      value,
+      nonRecyclableKg,
+      form.paymentMethod
+    );
   };
 
   const handleNonRecyclableKgChange = (value) => {
     setNonRecyclableKg(value);
-    calculatePrices(recyclableItem, recyclableKg, nonRecyclableItem, value, form.paymentMethod);
+    calculatePrices(
+      recyclableItem,
+      recyclableKg,
+      nonRecyclableItem,
+      value,
+      form.paymentMethod
+    );
   };
 
   const handleSubmit = async (e) => {
@@ -121,9 +146,14 @@ export default function RequestPickupForm() {
       address: form.address,
       pickupTime: form.pickupTime,
       paymentMethod: form.paymentMethod,
+       phone: form.phone,
     };
 
-    if (recyclableItem && !isNaN(recyclableKgParsed) && recyclableKgParsed > 0) {
+    if (
+      recyclableItem &&
+      !isNaN(recyclableKgParsed) &&
+      recyclableKgParsed > 0
+    ) {
       payload.recyclable = {
         item: recyclableItem,
         kg: recyclableKgParsed,
@@ -131,7 +161,11 @@ export default function RequestPickupForm() {
       };
     }
 
-    if (nonRecyclableItem && !isNaN(nonRecyclableKgParsed) && nonRecyclableKgParsed > 0) {
+    if (
+      nonRecyclableItem &&
+      !isNaN(nonRecyclableKgParsed) &&
+      nonRecyclableKgParsed > 0
+    ) {
       payload.nonRecyclable = {
         item: nonRecyclableItem,
         kg: nonRecyclableKgParsed,
@@ -145,14 +179,20 @@ export default function RequestPickupForm() {
     }
 
     try {
-      const res = await axios.post("http://localhost:5000/api/pickups/createpickup", payload);
+      const res = await axios.post(
+        "http://localhost:5000/api/pickups/createpickup",
+        payload
+      );
 
       alert("Pickup requested successfully!");
       console.log("Saved:", res.data);
       window.location.reload();
     } catch (error) {
       console.error("Submit error:", error?.response?.data || error.message);
-      alert("Submission failed: " + (error?.response?.data?.error || "Server error."));
+      alert(
+        "Submission failed: " +
+          (error?.response?.data?.error || "Server error.")
+      );
     }
   };
 
@@ -165,7 +205,6 @@ export default function RequestPickupForm() {
         <select
           value={recyclableItem}
           onChange={(e) => handleRecyclableItemChange(e.target.value)}
-          
         >
           <option value="">Select Recyclable Item</option>
           {Object.keys(rates.recyclable).map((item) => (
@@ -218,6 +257,17 @@ export default function RequestPickupForm() {
           value={form.pickupTime}
           required
         />
+        <input
+          name="phone"
+          placeholder="Phone Number"
+          onChange={handleChange}
+          value={form.phone}
+          required
+          pattern="[0-9]{10}"
+          maxLength={10}
+          title="Enter a 10-digit phone number"
+        />
+
         <label>Payment Method</label>
         <select
           name="paymentMethod"
@@ -231,7 +281,9 @@ export default function RequestPickupForm() {
         </select>
 
         {priceUser > 0 && <p>You will receive ₹{priceUser.toFixed(2)}</p>}
-        {priceDriver > 0 && <p>Driver will receive ₹{priceDriver.toFixed(2)}</p>}
+        {priceDriver > 0 && (
+          <p>Driver will receive ₹{priceDriver.toFixed(2)}</p>
+        )}
 
         <button type="submit">Submit</button>
       </form>

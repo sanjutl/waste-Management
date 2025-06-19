@@ -13,6 +13,7 @@ const pickupSchema = new mongoose.Schema({
     enum: ['Pending', 'Accepted'],
     default: 'Pending'
   },
+  phone: { type: String, required: true },
   recyclable: {
     item: { type: String },
     kg: { type: Number, min: 0 },

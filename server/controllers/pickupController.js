@@ -10,6 +10,7 @@ exports.createPickup = async (req, res) => {
       paymentMethod,
       recyclable,
       nonRecyclable,
+      phone
     } = req.body;
 
     // Basic required fields
@@ -43,6 +44,7 @@ exports.createPickup = async (req, res) => {
       address: address.trim(),
       pickupTime,
       paymentMethod,
+      phone,
       recyclable: isRecyclableValid ? {
         item: recyclable.item,
         kg: recyclableKg,

@@ -13,7 +13,15 @@
   justify-content: flex-end;
   margin-bottom: 20px;
 }
+.pickup-actions{
+  display: flex;
+  justify-content: space-between;
+}
 
+.pickup-actions a{
+  text-decoration: none;
+  color: white;
+}
 .nav-btn {
   padding: 10px 20px;
   border-radius: 10px;
@@ -24,7 +32,10 @@
   cursor: pointer;
   transition: background 0.3s ease;
 }
-
+.accept-btn{
+  padding: 5px;
+  border-radius: 10px;
+}
 .nav-btn:hover {
   background: rgba(255, 255, 255, 0.3);
 }
