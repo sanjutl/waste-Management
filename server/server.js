@@ -5,7 +5,10 @@ require('dotenv').config();
 
 const pickupRoutes = require('./routes/pickupRoutes');
 const partnerRoutes = require('./routes/partnerRoutes');
-const userRoutes = require('./routes/userRoutes')
+const userRoutes = require('./routes/userRoutes');
+const adminRoutes = require('./routes/adminRoutes');
+const companyRoutes = require('./routes/companyRoutes');
+const driverRoutes = require('./routes/driverRoutes')
 
 const app = express();
 
@@ -16,7 +19,10 @@ app.use(express.json());
 // Routes
 app.use('/api/pickups', pickupRoutes);
 app.use('/api/partners', partnerRoutes);
-app.use('/api/user', userRoutes)
+app.use('/api/user', userRoutes);
+app.use('/api/admin', adminRoutes);
+app.use('/api/company', companyRoutes);
+app.use('/api/driver', driverRoutes)
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI, {

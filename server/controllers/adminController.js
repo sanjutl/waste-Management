@@ -1,10 +1,10 @@
-const User = require('../models/user')
+const User = require('../models/admin')
 const { passwordValidator } = require("../utils/passwordValidator")
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 
-exports.registerUser = async (req, res) => {
+exports.registerAdmin = async (req, res) => {
     let { name, email, password } = req.body;
 
     try {
@@ -50,12 +50,12 @@ exports.registerUser = async (req, res) => {
 
         const createdUser = await User.findById(user._id).select("-password");
         if (!createdUser) {
-            return res.status(500).json({ message: "User registration failed" });
+            return res.status(500).json({ message: "Admin registration failed" });
         }
 
         return res
             .status(201)
-            .json({ message: "User Registration Successful", data: createdUser });
+            .json({ message: "Admin Registration Successful", data: createdUser });
     } catch (err) {
         console.error("Error during registration:", err);
         return res
@@ -66,7 +66,7 @@ exports.registerUser = async (req, res) => {
 
 
 
-exports.loginUser = async (req, res) => {
+exports.loginAdmin = async (req, res) => {
     const { email, password } = req.body;
 
     try {
@@ -101,6 +101,7 @@ exports.loginUser = async (req, res) => {
                 id: user._id,
                 name: user.name,
                 email: user.email,
+                role: user.role
             },
         });
     } catch (err) {
@@ -108,68 +109,5 @@ exports.loginUser = async (req, res) => {
         return res
             .status(500)
             .json({ message: `Internal Server Error: ${err.message}` });
-    }
-};
-
-exports.getUser = async (req, res) => {
-    try {
-        const getUser = await User.findById();
-        console.log("User:", getUser);
-
-        if (!getUser) {
-            return res.status(404).json({ message: "User not found" });
-        }
-
-        res.status(200).json({ message: "User Fetched", data: getUser });
-    } catch (error) {
-        res.status(500).json({ message: `Internal Server Error: ${error.message}` });
-    }
-};
-
-exports.getUser = async (req, res) => {
-    const id = req.params.id;
-    try {
-        console.log("ID:", id);
-
-        const getUser = await User.findById(id);
-        console.log("User:", getUser);
-
-        if (!getUser) {
-            return res.status(404).json({ message: "User not found" });
-        }
-
-        res.status(200).json({ message: "User Fetched", data: getUser });
-    } catch (error) {
-        res.status(500).json({ message: `Internal Server Error: ${error.message}` });
-    }
-};
-
-exports.editUser = async (req, res) => {
-    const id = req.params.id;
-    const { address,
-        pickupTime,
-        paymentMethod,
-        recyclable,
-        nonRecyclable,
-        phone, driver } = req.body
-    try {
-        const getUser = await User.findByIdAndUpdate(id, {
-            address,
-            pickupTime,
-            paymentMethod,
-            recyclable,
-            nonRecyclable,
-            phone,
-            driver
-        }, { new: true });
-        console.log("User:", getUser);
-
-        if (!getUser) {
-            return res.status(404).json({ message: "User not found" });
-        }
-
-        res.status(200).json({ message: "User Fetched", data: getUser });
-    } catch (error) {
-        res.status(500).json({ message: `Internal Server Error: ${error.message}` });
     }
 };
