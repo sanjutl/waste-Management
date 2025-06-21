@@ -1,19 +1,20 @@
-const User = require('../models/user')
+const Driver = require('../models/driver')
 const { passwordValidator } = require("../utils/passwordValidator")
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 
-exports.registerUser = async (req, res) => {
-    let { name, email, password } = req.body;
+exports.registerDriver = async (req, res) => {
+    let { name, email, password, number } = req.body;
 
     try {
         // Sanitize inputs
         name = name?.trim();
         email = email?.trim();
         password = password?.trim();
+        number = number?.trim();
 
-        if (!name || !email || !password) {
+        if (!name || !email || !password || !number) {
             return res.status(400).json({ message: "All fields are required" });
         }
 
@@ -33,7 +34,7 @@ exports.registerUser = async (req, res) => {
         }
 
         // Check for existing user
-        const existingUser = await User.findOne({ email });
+        const existingUser = await Driver.findOne({ email });
         if (existingUser) {
             return res.status(400).json({ message: "Email is already in use" });
         }
@@ -42,20 +43,21 @@ exports.registerUser = async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, 10);
 
         // Create user
-        const user = await User.create({
+        const user = await Driver.create({
             name,
             email,
             password: hashedPassword,
+            number
         });
 
-        const createdUser = await User.findById(user._id).select("-password");
+        const createdUser = await Driver.findById(user._id).select("-password");
         if (!createdUser) {
-            return res.status(500).json({ message: "User registration failed" });
+            return res.status(500).json({ message: "Driver registration failed" });
         }
 
         return res
             .status(201)
-            .json({ message: "User Registration Successful", data: createdUser });
+            .json({ message: "Driver Registration Successful", data: createdUser });
     } catch (err) {
         console.error("Error during registration:", err);
         return res
@@ -66,7 +68,7 @@ exports.registerUser = async (req, res) => {
 
 
 
-exports.loginUser = async (req, res) => {
+exports.loginDriver = async (req, res) => {
     const { email, password } = req.body;
 
     try {
@@ -76,7 +78,7 @@ exports.loginUser = async (req, res) => {
         }
 
         // Find user
-        const user = await User.findOne({ email });
+        const user = await Driver.findOne({ email });
         if (!user) {
             return res.status(404).json({ message: "Email doesn't exist" });
         }
@@ -101,6 +103,7 @@ exports.loginUser = async (req, res) => {
                 id: user._id,
                 name: user.name,
                 email: user.email,
+                number: user.number
             },
         });
     } catch (err) {
@@ -111,65 +114,12 @@ exports.loginUser = async (req, res) => {
     }
 };
 
-exports.getUser = async (req, res) => {
+
+exports.getAllDrivers = async (req, res) => {
     try {
-        const getUser = await User.findById();
-        console.log("User:", getUser);
-
-        if (!getUser) {
-            return res.status(404).json({ message: "User not found" });
-        }
-
-        res.status(200).json({ message: "User Fetched", data: getUser });
+        const allDrivers = await Driver.find();
+        res.status(200).json({ message: "Drivers Fetched Succesfuuly", data: allDrivers })
     } catch (error) {
-        res.status(500).json({ message: `Internal Server Error: ${error.message}` });
-    }
-};
-
-exports.getUser = async (req, res) => {
-    const id = req.params.id;
-    try {
-        console.log("ID:", id);
-
-        const getUser = await User.findById(id);
-        console.log("User:", getUser);
-
-        if (!getUser) {
-            return res.status(404).json({ message: "User not found" });
-        }
-
-        res.status(200).json({ message: "User Fetched", data: getUser });
-    } catch (error) {
-        res.status(500).json({ message: `Internal Server Error: ${error.message}` });
-    }
-};
-
-exports.editUser = async (req, res) => {
-    const id = req.params.id;
-    const { address,
-        pickupTime,
-        paymentMethod,
-        recyclable,
-        nonRecyclable,
-        phone, driver } = req.body
-    try {
-        const getUser = await User.findByIdAndUpdate(id, {
-            address,
-            pickupTime,
-            paymentMethod,
-            recyclable,
-            nonRecyclable,
-            phone,
-            driver
-        }, { new: true });
-        console.log("User:", getUser);
-
-        if (!getUser) {
-            return res.status(404).json({ message: "User not found" });
-        }
-
-        res.status(200).json({ message: "User Fetched", data: getUser });
-    } catch (error) {
-        res.status(500).json({ message: `Internal Server Error: ${error.message}` });
+        res.status(500).json({ message: `Internal Server Error: ${err.message}` })
     }
 };
