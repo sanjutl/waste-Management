@@ -27,7 +27,6 @@ function UserRegistration() {
 
       if (res.status === 201) {
         alert("Registration successful. Redirecting to login...");
-        navigate("/userlogin"); // ✅ Navigate on success
       } else {
         alert(res.data.message || "Registration failed");
       }

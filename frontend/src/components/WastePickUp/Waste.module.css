@@ -1,0 +1,111 @@
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.modal {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 12px;
+  max-height: 90vh;
+  overflow-y: auto;
+  width: 500px;
+  position: relative;
+}
+/* Container styling */
+.react-time-picker {
+  width: 100%;
+  margin: 0.5rem 0;
+  font-family: inherit;
+}
+
+/* Input box */
+.react-time-picker__inputGroup {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 0.7rem;
+  font-size: 1rem;
+  width: 100%;
+  background-color: #fff;
+  color: #333;
+}
+
+/* Focus outline */
+.react-time-picker__inputGroup:focus-within {
+  border-color: #74c043;
+  box-shadow: 0 0 0 2px rgba(116, 192, 67, 0.3);
+}
+
+/* Hide clock icon if not needed */
+.react-time-picker__clock-button {
+  display: none;
+}
+
+/* Optional: Adjust clear button */
+.react-time-picker__clear-button {
+  display: none;
+}
+
+/* Clock popup */
+.react-clock {
+  margin-top: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+}
+
+.form h2 {
+  margin-bottom: 1rem;
+}
+
+.form input,
+.form select,
+.form textarea {
+  width: 100%;
+  margin: 0.5rem 0;
+  padding: 0.6rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+textarea {
+  resize: vertical;
+}
+
+.actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1rem;
+}
+
+.actions button {
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.actions .cancel {
+  background-color: #ccc;
+}
+
+.popup {
+  background: #f9f9f9;
+  padding: 1rem;
+  border-radius: 10px;
+  margin-top: 2rem;
+  text-align: center;
+}
+
+.popup img {
+  width: 150px;
+  height: auto;
+  margin: 1rem 0;
+}

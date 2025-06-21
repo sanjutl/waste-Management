@@ -7,6 +7,8 @@ import AdminLogin from "./components/AdminLogin";
 import ProtectedAdminRoute from "./components/ProtectedAdminRoute";
 import UserLogin from "./components/UserLogin/UserLogin"
 import UserRegistration from "./components/UserRegistration/UserRegistration";
+import UserHome from "./components/UserHome/UserHome";
+import UserMainHome from "./components/UserMainHome/UserMainHome";
 // import NewPage from "./components/NewPage";
 
 function App() {
@@ -16,10 +18,11 @@ function App() {
         <Route path="/home" element={<Home />} />
         <Route path="/driver" element={<DriverPanel />} />
         <Route path="/admin-login" element={<AdminLogin />} />
+        <Route path="/userhome" element={<UserHome />} />
+        <Route path="/userhomemain" element={<UserMainHome />} />
         
         <Route path="/" element={<UserLogin />} />
         <Route path="/userreg" element={<UserRegistration />} />
-        {/* <Route path="/newpage" element={<NewPage />} /> */}
         <Route
           path="/admin"
           element={
