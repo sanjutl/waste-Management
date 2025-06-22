@@ -69,7 +69,11 @@ function UserHome() {
           } else if (roleNum === 500) {
             const driverId = res.data.user.name; // Assuming user.id is the driver's ObjectId string
             navigate(`/driver/${driverId}`);
-          } else {
+          } else if (roleNum === 600) {
+            const patnerId = res.data.user.id; // Assuming user.id is the driver's ObjectId string
+            navigate(`/patner-home/${patnerId}`);
+          }
+           else {
             navigate(`/userhomemain/${userId}`);
           }
         }
@@ -173,11 +177,23 @@ function UserHome() {
             {isRegister ? "Login" : "Register"}
           </span>
         </p>
+        <p className={styles.linkText}>
+          Want to offer services?{" "}
+          <span
+            className={styles.toggleLink}
+            onClick={() => {
+              navigate("/partner-register");
+            }}
+            style={{ color: "#74c043", cursor: "pointer" }}
+          >
+            Register as a Partner
+          </span>
+        </p>
       </div>
 
       <div className={styles.heroText}>
         <h5>Turning Waste Into New Possibilities</h5>
-        <h1 style={{textAlign:"left"}}>
+        <h1 style={{ textAlign: "left" }}>
           Smart Disposal <br /> For Cleaner World
         </h1>
         <p>
