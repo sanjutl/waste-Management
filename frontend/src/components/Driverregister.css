@@ -24,3 +24,47 @@
 .nav-btn:hover {
   background-color: #0056b3;
 }
+
+.form {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #fff;
+}
+
+form {
+  background-color: #f8f8f8;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 500px;
+  margin-top: 20px;
+}
+
+.adminput-group {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.adminput-group label {
+  width: 40%;
+  font-weight: 500;
+}
+
+.adminput-group input {
+  width: 58%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.input-span-btn23 {
+  width: 58%;
+}
+
+.input-span-btn23 input {
+  width: 100%;
+}

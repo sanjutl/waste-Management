@@ -13,11 +13,11 @@ function UserList() {
     };
 
     const userData = [
-        { id: 1, name: "Vishva", email: "vishva@gmail.com", address: "Palayam", phone: "9999999999", driver: "Ramesh" },
-        { id: 2, name: "Sanju", email: "sanju@gmail.com", address: "vjmd", phone: "8888888888", driver: "Arun" },
-        { id: 3, name: "Adithya", email: "adithya@gmail.com", address: "vjmd", phone: "7777777777", driver: "Govind" },
-        { id: 4, name: "Gokul", email: "gokul@gmail.com", address: "kollam", phone: "66666666", driver: "Manu" },
-        { id: 5, name: "Aksahy", email: "akshay@gmail.com", address: "attingal", phone: "55555555", driver: "David" }
+        { id: 1, name: "Vishva", email: "vishva@gmail.com", address: "Palayam", phone: "9999999999" },
+        { id: 2, name: "Sanju", email: "sanju@gmail.com", address: "vjmd", phone: "8888888888" },
+        { id: 3, name: "Adithya", email: "adithya@gmail.com", address: "vjmd", phone: "7777777777" },
+        { id: 4, name: "Gokul", email: "gokul@gmail.com", address: "kollam", phone: "66666666" },
+        { id: 5, name: "Aksahy", email: "akshay@gmail.com", address: "attingal", phone: "55555555" }
     ]
 
     return (
@@ -48,7 +48,6 @@ function UserList() {
                         <th>Email</th>
                         <th>Address</th>
                         <th>Phone</th>
-                        <th>Driver</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -58,7 +57,6 @@ function UserList() {
                             <td>{user.email}</td>
                             <td>{user.address}</td>
                             <td>{user.phone}</td>
-                            <td>{user.driver}</td>
                         </tr>
                     ))}
                 </tbody>
