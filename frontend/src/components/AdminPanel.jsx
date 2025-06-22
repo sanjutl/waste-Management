@@ -1,10 +1,13 @@
 import { useEffect, useState } from "react";
 import { api } from "../api";
 import "./AdminPanel.css";
+import { useNavigate } from "react-router-dom";
 
 export default function AdminPanel() {
   const [partners, setPartners] = useState([]);
   const [pickups, setPickups] = useState([]);
+
+  const navigate = useNavigate()
 
   useEffect(() => {
     fetchPartners();
@@ -34,12 +37,20 @@ export default function AdminPanel() {
   return (
     <div className="admin-container">
       <div className="top-bar">
-        <button
-          className="nav-btn"
-          onClick={() => (window.location.href = "/")}
-        >
-          USER
-        </button>
+        <div>
+          <button
+            className="nav-btn"
+            onClick={() => navigate("/userlist")}
+          >
+            USER
+          </button>
+          <button
+            className="nav-btn"
+            onClick={() => navigate("/driverregister")}
+          >
+            DRIVER
+          </button>
+        </div>
         <button className="nav-btn" onClick={logout}>
           LOGOUT
         </button>

@@ -10,6 +10,8 @@ import UserRegistration from "./components/UserRegistration/UserRegistration";
 import UserHome from "./components/UserHome/UserHome";
 import UserMainHome from "./components/UserMainHome/UserMainHome";
 // import NewPage from "./components/NewPage";
+import UserList from "./components/UserList";
+import Driverregister from "./components/Driverregister";
 
 function App() {
   return (
@@ -20,7 +22,7 @@ function App() {
         <Route path="/admin-login" element={<AdminLogin />} />
         <Route path="/userhome" element={<UserHome />} />
         <Route path="/userhomemain" element={<UserMainHome />} />
-        
+
         <Route path="/" element={<UserLogin />} />
         <Route path="/userreg" element={<UserRegistration />} />
         <Route
@@ -31,6 +33,8 @@ function App() {
             </ProtectedAdminRoute>
           }
         />
+        <Route path="/userlist" element={<UserList />} />
+        <Route path="/driverregister" element={<Driverregister />} />
       </Routes>
     </Router>
   );
