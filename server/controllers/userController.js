@@ -249,3 +249,45 @@ exports.updateOrderStatus = async (req, res) => {
     res.status(500).json({ message: "Internal server error", error: error.message });
   }
 };
+exports.addReviewToOrder = async (req, res) => {
+  const { userId, orderId } = req.params;
+  const { rating, comment } = req.body;
+
+  try {
+    const user = await User.findById(userId);
+    const order = user.orders.id(orderId);
+    if (!order) return res.status(404).json({ message: "Order not found" });
+
+    order.review = { rating, comment, createdAt: new Date() };
+    await user.save();
+
+    res.status(200).json({ message: "Review submitted successfully" });
+  } catch (err) {
+    res.status(500).json({ message: "Failed to submit review", error: err.message });
+  }
+};
+exports.getDriverReviews = async (req, res) => {
+  const { driverName } = req.params;
+
+  try {
+    const users = await User.find({ "orders.driver": driverName });
+    const reviews = [];
+
+    users.forEach(user => {
+      user.orders.forEach(order => {
+        if (order.driver === driverName && order.review) {
+          reviews.push({
+            userName: user.name,
+            rating: order.review.rating,
+            comment: order.review.comment,
+            date: order.review.createdAt
+          });
+        }
+      });
+    });
+
+    res.status(200).json({ success: true, reviews });
+  } catch (err) {
+    res.status(500).json({ message: "Error fetching reviews", error: err.message });
+  }
+};

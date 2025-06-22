@@ -65,7 +65,7 @@ function UserHome() {
           const roleNum = Number(res.data.user.role);
 
           if (roleNum === 400) {
-            navigate("/admin/dashboard");
+            navigate("/userlist");
           } else if (roleNum === 500) {
             const driverId = res.data.user.name; // Assuming user.id is the driver's ObjectId string
             navigate(`/driver/${driverId}`);
@@ -177,7 +177,7 @@ function UserHome() {
 
       <div className={styles.heroText}>
         <h5>Turning Waste Into New Possibilities</h5>
-        <h1>
+        <h1 style={{textAlign:"left"}}>
           Smart Disposal <br /> For Cleaner World
         </h1>
         <p>

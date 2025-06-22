@@ -10,8 +10,8 @@ function UserOrder() {
   const [drivers, setDrivers] = useState([]);
 
   const [showPopup, setShowPopup] = useState(false);
-  const [review, setReview] = useState("");
-
+  const [review, setReview] = useState({ rating: 0, comment: "" });
+  const [orderId,setOrderId]=useState(null)
   useEffect(() => {
     const fetchOrders = async () => {
       try {
@@ -30,7 +30,9 @@ function UserOrder() {
   useEffect(() => {
     const getDrivers = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/driver/alldrivers");
+        const res = await axios.get(
+          "http://localhost:5000/api/driver/alldrivers"
+        );
         setDrivers(res.data.data);
         console.log("Drivers:", res.data.data);
       } catch (error) {
@@ -40,11 +42,22 @@ function UserOrder() {
     getDrivers();
   }, []);
 
-  const handleSubmit = () => {
-    console.log("Review submitted:", review);
+  const handleSubmitReview = async () => {
+  try {
+    await axios.put(`http://localhost:5000/api/user/orders/review/${userId}/${orderId}`, review);
     setShowPopup(false);
-    setReview("");
-  };
+    setReview({ rating: 0, comment: "" });
+    alert("Review submitted!");
+  } catch (err) {
+    console.error("Error submitting review", err);
+    alert("Failed to submit review");
+  }
+};
+const handleClick=(orderId)=>{
+setOrderId(orderId)
+setShowPopup(true)
+
+}
 
   return (
     <div className={styles.orderPage}>
@@ -68,7 +81,9 @@ function UserOrder() {
           {orders.length > 0 ? (
             orders.map((order, index) => {
               // Find matching driver by name
-              const matchedDriver = drivers.find((d) => d.name === order.driver);
+              const matchedDriver = drivers.find(
+                (d) => d.name === order.driver
+              );
               return (
                 <tr key={order._id}>
                   <td>{index + 1}</td>
@@ -88,7 +103,9 @@ function UserOrder() {
                       : order.driver || "Not Assigned"}
                   </td>
                   <td>
-                    <button onClick={() => setShowPopup(true)}>Add Review</button>
+                    <button onClick={()=>handleClick(order._id)}>
+                      Add Review
+                    </button>
                   </td>
                 </tr>
               );
@@ -110,16 +127,33 @@ function UserOrder() {
             >
               ×
             </button>
-            <h3>Write your Review</h3>
+            <h3>Rate your Driver</h3>
+            <div className={styles.rating}>
+              {[1, 2, 3, 4, 5].map((star) => (
+                <span
+                  key={star}
+                  className={
+                    star <= review.rating ? styles.activeStar : styles.star
+                  }
+                  onClick={() =>
+                    setReview((prev) => ({ ...prev, rating: star }))
+                  }
+                >
+                  ★
+                </span>
+              ))}
+            </div>
             <textarea
-              value={review}
-              onChange={(e) => setReview(e.target.value)}
-              placeholder="Share your experience..."
-              rows={5}
+              value={review.comment}
+              onChange={(e) =>
+                setReview((prev) => ({ ...prev, comment: e.target.value }))
+              }
+              placeholder="Write your feedback..."
+              rows={4}
               className={styles.reviewInput}
             />
-            <button className={styles.submitBtn} onClick={handleSubmit}>
-              Submit
+            <button className={styles.submitBtn} onClick={handleSubmitReview}>
+              Submit Review
             </button>
           </div>
         </div>
