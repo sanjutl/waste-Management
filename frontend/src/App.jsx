@@ -14,6 +14,7 @@ import UserOrder from "./components/UserOrder/UserOrder";
 import DriveHome from "./components/DriverHomePage/DriveHome";
 import UserList from "./components/UserList";
 import Driverregister from "./components/Driverregister";
+import PartnerandOrders from "./components/PartnerandOrders";
 
 function App() {
   return (
@@ -41,6 +42,7 @@ function App() {
         />
         <Route path="/userlist" element={<UserList />} />
         <Route path="/driverregister" element={<Driverregister />} />
+        <Route path="/admindash" element={<PartnerandOrders />} />
       </Routes>
     </Router>
   );

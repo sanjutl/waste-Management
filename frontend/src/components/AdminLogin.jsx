@@ -11,7 +11,7 @@ export default function AdminLogin() {
     e.preventDefault();
     if (email === "admin@gmail.com" && password === "admin") {
       localStorage.setItem("isAdminAuthenticated", "true");
-      navigate("/userlist");
+      navigate("/admindash");
     } else {
       alert("Invalid admin credentials");
     }

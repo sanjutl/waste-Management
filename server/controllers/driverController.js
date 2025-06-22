@@ -14,10 +14,6 @@ exports.registerDriver = async (req, res) => {
     phone = phone?.trim();
     vehicleNumber = vehicleNumber?.trim();
 
-    if (!name || !email || !password || !phone) {
-      return res.status(400).json({ message: "All fields are required" });
-    }
-
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       return res.status(400).json({ message: "Invalid email format" });
