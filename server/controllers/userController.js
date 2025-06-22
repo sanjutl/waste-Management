@@ -291,3 +291,32 @@ exports.getDriverReviews = async (req, res) => {
     res.status(500).json({ message: "Error fetching reviews", error: err.message });
   }
 };
+exports.getAllUsersOrders = async (req, res) => {
+  try {
+    const users = await User.find({}, "name email orders"); // Select only necessary fields
+
+    const allOrders = [];
+
+    users.forEach(user => {
+      user.orders.forEach(order => {
+        allOrders.push({
+          userId: user._id,
+          userName: user.name,
+          userEmail: user.email,
+          ...order.toObject(), // Spread order fields including status, review, etc.
+        });
+      });
+    });
+
+    res.status(200).json({
+      message: "All users' orders retrieved successfully",
+      data: allOrders,
+    });
+  } catch (error) {
+    console.error("Error fetching all users' orders:", error);
+    res.status(500).json({
+      message: "Internal server error",
+      error: error.message,
+    });
+  }
+};
