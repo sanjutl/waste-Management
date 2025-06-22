@@ -1,11 +1,17 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const driverSchema = new mongoose.Schema({
-    name: { type: String },
-    email: { type: String },
-    password: { type: String },
-    number: { type: String },
-    role: { type: String, default: 500 }
+  name: String,
+  email: String,
+  phone: String,
+  password: { type: String, required: true },
+  vehicleNumber: String,
+  status: {
+    type: String,
+    enum: ["pending", "approved", "rejected"],
+    default: "approved"
+  },
+  role: { type: String, default: 500 }
 });
 
-module.exports = mongoose.model('Driver', driverSchema);
+module.exports = mongoose.model("Driver", driverSchema);

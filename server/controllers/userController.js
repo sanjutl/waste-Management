@@ -109,7 +109,7 @@ exports.loginUser = async (req, res) => {
             .status(500)
             .json({ message: `Internal Server Error: ${err.message}` });
     }
-};
+}
 
 exports.getUser = async (req, res) => {
     try {
@@ -126,50 +126,126 @@ exports.getUser = async (req, res) => {
     }
 };
 
-exports.getUser = async (req, res) => {
-    const id = req.params.id;
+// In your controller
+exports.getUserOrders = async (req, res) => {
     try {
-        console.log("ID:", id);
-
-        const getUser = await User.findById(id);
-        console.log("User:", getUser);
-
-        if (!getUser) {
+        const user = await User.findById(req.params.id);
+        if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
-
-        res.status(200).json({ message: "User Fetched", data: getUser });
+        res.status(200).json({
+            message: "Orders retrieved successfully",
+            data: user.orders
+        });
     } catch (error) {
-        res.status(500).json({ message: `Internal Server Error: ${error.message}` });
+        res.status(500).json({
+            message: "Error retrieving orders",
+            error: error.message
+        });
     }
 };
 
+
+
 exports.editUser = async (req, res) => {
     const id = req.params.id;
-    const { address,
-        pickupTime,
+    const { 
+        address,
+        pickupTime,  // This should be a full datetime string
         paymentMethod,
         recyclable,
         nonRecyclable,
-        phone, driver } = req.body
-    try {
-        const getUser = await User.findByIdAndUpdate(id, {
-            address,
-            pickupTime,
-            paymentMethod,
-            recyclable,
-            nonRecyclable,
-            phone,
-            driver
-        }, { new: true });
-        console.log("User:", getUser);
+        phone, 
+        driver 
+    } = req.body;
 
-        if (!getUser) {
+    // Validation
+    if (!address || !pickupTime || !paymentMethod || !phone) {
+        return res.status(400).json({ message: "Missing required fields" });
+    }
+
+    try {
+        // Create proper date object (combine with current date if only time provided)
+        let pickupDate;
+        if (pickupTime.match(/^\d{2}:\d{2}$/)) {
+            const [hours, minutes] = pickupTime.split(':');
+            pickupDate = new Date();
+            pickupDate.setHours(hours, minutes, 0, 0);
+        } else {
+            pickupDate = new Date(pickupTime);
+        }
+
+        const newOrder = {
+            address,
+            pickupTime: pickupDate,
+            paymentMethod,
+            phone,
+            driver: driver || "Pending",
+            ...(recyclable && { 
+                recyclable: {
+                    item: recyclable.item,
+                    kg: Number(recyclable.kg)
+                } 
+            }),
+            ...(nonRecyclable && { 
+                nonRecyclable: {
+                    item: nonRecyclable.item,
+                    kg: Number(nonRecyclable.kg)
+                } 
+            })
+        };
+
+        const updatedUser = await User.findByIdAndUpdate(
+            id,
+            { $push: { orders: newOrder } },
+            { new: true, runValidators: true }
+        );
+
+        if (!updatedUser) {
             return res.status(404).json({ message: "User not found" });
         }
 
-        res.status(200).json({ message: "User Fetched", data: getUser });
+        res.status(200).json({ 
+            message: "Order added successfully", 
+            data: updatedUser.orders 
+        });
     } catch (error) {
-        res.status(500).json({ message: `Internal Server Error: ${error.message}` });
+        console.error("Error adding order:", error);
+        res.status(500).json({ 
+            message: "Error adding order",
+            error: error.message 
+        });
     }
+};
+exports.updateOrderStatus = async (req, res) => {
+  const { userId, orderId } = req.params;
+  const { status } = req.body; // e.g. "approved", "pending", "rejected"
+
+  if (!status) {
+    return res.status(400).json({ message: "Status is required" });
+  }
+
+  try {
+    // Update the order status in the orders array where _id = orderId
+    const user = await User.findOneAndUpdate(
+      { _id: userId, "orders._id": orderId },
+      { $set: { "orders.$.status": status } },
+      { new: true }
+    );
+
+    if (!user) {
+      return res.status(404).json({ message: "User or order not found" });
+    }
+
+    // Find the updated order to return
+    const updatedOrder = user.orders.find(order => order._id.toString() === orderId);
+
+    res.status(200).json({
+      message: "Order status updated successfully",
+      data: updatedOrder,
+    });
+  } catch (error) {
+    console.error("Error updating order status:", error);
+    res.status(500).json({ message: "Internal server error", error: error.message });
+  }
 };
