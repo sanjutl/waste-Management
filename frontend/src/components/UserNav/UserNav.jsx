@@ -1,9 +1,10 @@
 import React from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import styles from "./UserNav.module.css";
 import logo  from "../../assets/logo.jpg"
 
 function Navbar() {
+  const {userId}=useParams()
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -17,7 +18,7 @@ function Navbar() {
       <ul className={styles.navLinks}>
         <li><Link to="/home">Home</Link></li>
         <li><Link to="/news">News</Link></li>
-        <li><Link to="/orders">Orders</Link></li>
+        <li><Link to={`/userorder/${userId}`}>Orders</Link></li>
         <li><button onClick={handleLogout} className={styles.logoutBtn}>Logout</button></li>
       </ul>
     </nav>

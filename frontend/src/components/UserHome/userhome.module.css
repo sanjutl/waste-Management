@@ -128,3 +128,8 @@
   font-weight: bold;
   text-decoration: none;
 }
+.errorMsg {
+  color: red;
+  margin-top: 8px;
+  font-weight: 500;
+}

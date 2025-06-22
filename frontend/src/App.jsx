@@ -9,7 +9,9 @@ import UserLogin from "./components/UserLogin/UserLogin"
 import UserRegistration from "./components/UserRegistration/UserRegistration";
 import UserHome from "./components/UserHome/UserHome";
 import UserMainHome from "./components/UserMainHome/UserMainHome";
+import UserOrder from "./components/UserOrder/UserOrder";
 // import NewPage from "./components/NewPage";
+import DriveHome from "./components/DriverHomePage/DriveHome";
 
 function App() {
   return (
@@ -18,10 +20,14 @@ function App() {
         <Route path="/home" element={<Home />} />
         <Route path="/driver" element={<DriverPanel />} />
         <Route path="/admin-login" element={<AdminLogin />} />
-        <Route path="/userhome" element={<UserHome />} />
-        <Route path="/userhomemain" element={<UserMainHome />} />
+        <Route path="/" element={<UserHome />} />
+        <Route path="/userhomemain/:userId" element={<UserMainHome />} />
+        <Route path="/userorder/:userId" element={<UserOrder />} />
+        <Route path="/driver/:userName" element={<DriveHome />} />
+
+
         
-        <Route path="/" element={<UserLogin />} />
+        {/* <Route path="/" element={<UserLogin />} /> */}
         <Route path="/userreg" element={<UserRegistration />} />
         <Route
           path="/admin"

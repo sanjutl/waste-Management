@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styles from "./Waste.module.css";
+import qr from "../../assets/qr.png";
 
 function WastePickUp({
   handleSubmit,
@@ -20,6 +21,10 @@ function WastePickUp({
   setShowScanner,
   driverAmount,
   onClose,
+  submitPickupRequest,
+  drivers,
+  selectedDriver,
+  setSelectedDriver
 }) {
   return (
     <div className={styles.overlay}>
@@ -79,7 +84,6 @@ function WastePickUp({
           <input
             name="pickupTime"
             type="time"
-            placeholder="Preferred Pickup Time"
             onChange={handleChange}
             value={form.pickupTime}
             required
@@ -94,7 +98,19 @@ function WastePickUp({
             maxLength={10}
             title="Enter a 10-digit phone number"
           />
-
+          <label>Select Driver</label>
+          <select
+            value={selectedDriver}
+            onChange={(e) => setSelectedDriver(e.target.value)}
+            required
+          >
+            <option value="">Select a driver</option>
+            {drivers.map((driver) => (
+              <option key={driver._id} value={driver.name}>
+                {driver.name} - {driver.vehicleNumber}
+              </option>
+            ))}
+          </select>
           <label>Payment Method</label>
           <select
             name="paymentMethod"
@@ -125,7 +141,14 @@ function WastePickUp({
             <h3>Scan to Pay</h3>
             <img src={qr} alt="Scan QR" />
             <p>Amount to pay: ₹{driverAmount.toFixed(2)}</p>
-            <button onClick={() => setShowScanner(false)}>Close</button>
+            <button
+              onClick={() => {
+                setShowScanner(false);
+                submitPickupRequest(); // 👈 call API after UPI scan
+              }}
+            >
+              Close
+            </button>
           </div>
         )}
       </div>

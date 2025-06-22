@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom"; // <-- You missed this import!
+import { useNavigate } from "react-router-dom";
 import video from "../../assets/banner-two-video.mp4";
 import styles from "./userhome.module.css";
 import axios from "axios";
@@ -13,48 +13,77 @@ function UserHome() {
     state: "",
     city: "",
   });
+  const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
 
-  const navigate = useNavigate(); // <-- Add this line
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  try {
-    if (isRegister) {
-      const res = await axios.post("http://localhost:5000/api/user/register", form);
-      if (res.status === 201) {
-        alert("Registration successful. Redirecting to login...");
-        setForm({ name: "", email: "", password: "", state: "", city: "" });
-        setIsRegister(false);
-      } else {
-        alert(res.data.message || "Registration failed");
-      }
-    } else {
-      const res = await axios.post("http://localhost:5000/api/user/login", {
-        email: form.email,
-        password: form.password,
-      });
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setErrorMsg("");
+    setLoading(true);
 
-      if (res.status === 200) {
-        alert("Login successful");
-        localStorage.setItem("userToken", res.data.token); // Save token (optional)
-        navigate("/home"); // Redirect after login
+    try {
+      if (isRegister) {
+        const cleanedForm = {
+          name: form.name.trim(),
+          email: form.email.trim(),
+          password: form.password.trim(),
+          state: form.state.trim(),
+          city: form.city.trim(),
+        };
+
+        const res = await axios.post(
+          "http://localhost:5000/api/user/register",
+          cleanedForm,
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        if (res.status === 201) {
+          alert("Registration successful. Redirecting to login...");
+          setForm({ name: "", email: "", password: "", state: "", city: "" });
+          setIsRegister(false);
+        }
       } else {
-        alert(res.data.message || "Login failed");
+        const res = await axios.post("http://localhost:5000/api/auth/login", {
+          email: form.email.trim(),
+          password: form.password,
+        });
+
+        if (res.status === 200 && res.data.token) {
+          localStorage.setItem("token", res.data.token);
+          const userId = res.data.user.id;
+          const roleNum = Number(res.data.user.role);
+
+          if (roleNum === 400) {
+            navigate("/admin/dashboard");
+          } else if (roleNum === 500) {
+            const driverId = res.data.user.name; // Assuming user.id is the driver's ObjectId string
+            navigate(`/driver/${driverId}`);
+          } else {
+            navigate(`/userhomemain/${userId}`);
+          }
+        }
       }
+    } catch (err) {
+      console.error("Auth error:", err);
+      setErrorMsg(
+        err.response?.data?.message ||
+          "An error occurred. Please check your input and try again."
+      );
+    } finally {
+      setLoading(false);
     }
-  } catch (err) {
-    console.error("Auth error:", err);
-    alert(
-      err.response?.data?.message || "An error occurred during authentication"
-    );
-  }
-};
-
+  };
 
   return (
     <div className={styles.heroSection}>
@@ -80,10 +109,10 @@ const handleSubmit = async (e) => {
                 type="text"
                 placeholder="State"
                 className={styles.input}
-                required
                 name="state"
                 onChange={handleChange}
                 value={form.state}
+                required
               />
               <input
                 type="text"
@@ -104,6 +133,7 @@ const handleSubmit = async (e) => {
             onChange={handleChange}
             value={form.email}
             required
+            autoComplete="email"
           />
           <input
             type="password"
@@ -113,11 +143,21 @@ const handleSubmit = async (e) => {
             value={form.password}
             onChange={handleChange}
             required
+            autoComplete={isRegister ? "new-password" : "current-password"}
           />
-          <button type="submit" className={styles.button}>
-            {isRegister ? "Register" : "Login"}
+          <button type="submit" className={styles.button} disabled={loading}>
+            {loading
+              ? isRegister
+                ? "Registering..."
+                : "Logging in..."
+              : isRegister
+              ? "Register"
+              : "Login"}
           </button>
         </form>
+
+        {errorMsg && <p className={styles.errorMsg}>{errorMsg}</p>}
+
         <p
           className={styles.linkText}
           style={{ cursor: "pointer", color: "#74c043" }}
@@ -125,7 +165,10 @@ const handleSubmit = async (e) => {
           {isRegister ? "Already have an account?" : "Don't have an account?"}{" "}
           <span
             className={styles.toggleLink}
-            onClick={() => setIsRegister(!isRegister)}
+            onClick={() => {
+              setIsRegister(!isRegister);
+              setErrorMsg("");
+            }}
           >
             {isRegister ? "Login" : "Register"}
           </span>
