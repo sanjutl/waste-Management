@@ -71,6 +71,11 @@ const userSchema = new mongoose.Schema({
         enum: ["Pending", "Accepted"],
         default: "Pending",
       },
+      review: {
+        rating: Number,
+        comment: String,
+        createdAt: { type: Date, default: Date.now },
+      },
     },
   ],
 });
