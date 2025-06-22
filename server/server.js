@@ -9,7 +9,7 @@ const userRoutes = require('./routes/userRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const companyRoutes = require('./routes/companyRoutes');
 const driverRoutes = require('./routes/driverRoutes')
-
+const authRoutes=require('./routes/authRoutes')
 const app = express();
 
 // Middleware
@@ -23,7 +23,7 @@ app.use('/api/user', userRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/company', companyRoutes);
 app.use('/api/driver', driverRoutes)
-
+app.use('/api/auth',authRoutes );
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,

@@ -17,24 +17,28 @@ function UserLogin() {
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const res = await axios.post('http://localhost:5000/api/user/login', form); // Update if needed
+ const handleSubmit = async (e) => {
+  e.preventDefault();
 
-      if (res.status === 200 && res.data.token) {
-        // Save token to localStorage (or cookies)
-        localStorage.setItem('token', res.data.token);
+  try {
+    const res = await axios.post('http://localhost:5000/api/auth/login', {
+      email: form.email,
+      password: form.password,
+    });
 
-        alert("Login successful!");
-        navigate('/home'); // 🔁 Update to your actual route
-      }
-    } catch (err) {
-      console.error("Login error:", err);
-      const message = err.response?.data?.message || "An error occurred while logging in.";
-      alert(message);
+    if (res.status === 200 && res.data.token) {
+      localStorage.setItem('token', res.data.token);
+      const role = res.data.user.role;
+
+      if (role === "400") navigate('/admin/dashboard');
+      else if (role === "500") navigate('/driver/dashboard');
+      else navigate('/user/home');
     }
-  };
+  } catch (err) {
+    alert(err.response?.data?.message || "Login failed");
+  }
+};
+
 
   return (
     <div>

@@ -1,26 +1,43 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./UserMainHome.module.css";
 import doctorImg from "../../assets/pic.jpg";
 import UserNav from "../UserNav/UserNav";
 import WastePickUp from "../WastePickUp/WastePickUp";
-import qr from "../../assets/qr.png"; // If needed for payment scan
 import axios from "axios";
-
+import { useParams } from "react-router-dom";
 function UserMainHome() {
-  const [pickUpForm, setPickUpForm] = useState(false);
+  const { userId } = useParams();
+  console.log("oknjc", userId);
 
+  const [pickUpForm, setPickUpForm] = useState(false);
   const [recyclableItem, setRecyclableItem] = useState("");
   const [recyclableKg, setRecyclableKg] = useState("");
   const [nonRecyclableItem, setNonRecyclableItem] = useState("");
   const [nonRecyclableKg, setNonRecyclableKg] = useState("");
   const [showScanner, setShowScanner] = useState(false);
-
+  const [driver, setDrivers] = useState([]);
   const [form, setForm] = useState({
     address: "",
     pickupTime: "",
     phone: "",
-    paymentMethod: "",
+    paymentMethod: ""
+
   });
+  const [selectedDriver, setSelectedDriver] = useState("");
+
+  // Reset form and state
+  const resetForm = () => {
+    setForm({
+      address: "",
+      pickupTime: "",
+      phone: "",
+      paymentMethod: "",
+    });
+    setRecyclableItem("");
+    setRecyclableKg("");
+    setNonRecyclableItem("");
+    setNonRecyclableKg("");
+  };
 
   const rates = {
     recyclable: {
@@ -37,9 +54,12 @@ function UserMainHome() {
     },
   };
 
-  const priceUser = recyclableKg * (rates.recyclable[recyclableItem] || 0);
+  // Ensure numbers for calculation
+  const priceUser =
+    (parseFloat(recyclableKg) || 0) * (rates.recyclable[recyclableItem] || 0);
   const priceDriver =
-    nonRecyclableKg * (rates.nonRecyclable[nonRecyclableItem] || 0);
+    (parseFloat(nonRecyclableKg) || 0) *
+    (rates.nonRecyclable[nonRecyclableItem] || 0);
   const driverAmount = priceDriver;
 
   const handleChange = (e) => {
@@ -52,54 +72,128 @@ function UserMainHome() {
   const handleNonRecyclableItemChange = (value) => setNonRecyclableItem(value);
   const handleNonRecyclableKgChange = (value) => setNonRecyclableKg(value);
 
+  const validateForm = () => {
+    if (
+      !form.address ||
+      !form.pickupTime ||
+      !form.phone ||
+      !form.paymentMethod
+    ) {
+      alert("All fields are required.");
+      return false;
+    }
+    // Validate at least one waste entry
+    if (
+      (!recyclableItem || !recyclableKg) &&
+      (!nonRecyclableItem || !nonRecyclableKg)
+    ) {
+      alert("Please provide at least one waste entry.");
+      return false;
+    }
+    if (recyclableKg && (isNaN(recyclableKg) || Number(recyclableKg) <= 0)) {
+      alert("Recyclable KG must be a positive number.");
+      return false;
+    }
+    if (
+      nonRecyclableKg &&
+      (isNaN(nonRecyclableKg) || Number(nonRecyclableKg) <= 0)
+    ) {
+      alert("Non-recyclable KG must be a positive number.");
+      return false;
+    }
+    return true;
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Pickup form submitted:", {
-      ...form,
-      recyclableItem,
-      recyclableKg,
-      nonRecyclableItem,
-      nonRecyclableKg,
-    });
-
+    if (!validateForm()) return;
     if (form.paymentMethod === "UPI") {
       setShowScanner(true);
     } else {
-      alert("Pickup request submitted successfully!");
-      setPickUpForm(false);
+      submitPickupRequest();
     }
   };
+  useEffect(() => {
+    getDrivers();
+  }, []);
+  const getDrivers = async () => {
+    try {
+      const res = await axios.get(
+        "http://localhost:5000/api/driver/verified-drivers"
+      );
+      if (res.status === 200) {
+        setDrivers(res.data.drivers);
+      }
+      console.log("fioj", res);
+    } catch (error) {}
+  };
+
   const submitPickupRequest = async () => {
     try {
+      // Convert pickup time to proper Date object
+      const [hours, minutes] = form.pickupTime.split(":");
+      const pickupDate = new Date();
+      pickupDate.setHours(hours, minutes, 0, 0);
+
       const payload = {
         address: form.address,
-        pickupTime: form.pickupTime,
+        pickupTime: pickupDate.toISOString(), // Send as ISO string
         phone: form.phone,
         paymentMethod: form.paymentMethod,
-        recyclableItem,
-        recyclableKg,
-        nonRecyclableItem,
-        nonRecyclableKg,
+        driver: selectedDriver || "Pending",
+        recyclable:
+          recyclableItem && recyclableKg
+            ? {
+                item: recyclableItem,
+                kg: Number(recyclableKg),
+              }
+            : undefined,
+        nonRecyclable:
+          nonRecyclableItem && nonRecyclableKg
+            ? {
+                item: nonRecyclableItem,
+                kg: Number(nonRecyclableKg),
+              }
+            : undefined,
       };
 
-      const response = await axios.post(
-        "http://localhost:5000/api/pickups",
-        payload
+      // Remove undefined fields to avoid validation issues
+      const cleanPayload = JSON.parse(JSON.stringify(payload));
+
+      const response = await axios.patch(
+        `http://localhost:5000/api/user/edituser/${userId}`, // Updated endpoint
+        cleanPayload,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
       );
 
-      if (response.status === 201) {
+      if (response.status === 200) {
         alert("Pickup request submitted successfully!");
         setPickUpForm(false);
         setShowScanner(false);
-        // optionally reset form here
-      } else {
-        alert("Failed to submit pickup request.");
+        resetForm();
       }
     } catch (error) {
-      console.error("Error submitting pickup:", error);
-      alert("Error submitting pickup request. Please try again.");
+      console.error("Full error details:", error);
+      let errorMessage = "Failed to submit pickup request";
+
+      if (error.response) {
+        if (error.response.status === 400) {
+          errorMessage =
+            "Invalid data: " +
+            (error.response.data.message || "Please check your input");
+        } else if (error.response.status === 404) {
+          errorMessage = "User not found";
+        }
+      }
+
+      alert(errorMessage);
     }
   };
+
   return (
     <>
       <UserNav />
@@ -147,7 +241,14 @@ function UserMainHome() {
           showScanner={showScanner}
           setShowScanner={setShowScanner}
           driverAmount={driverAmount}
-          onClose={() => setPickUpForm(false)}
+          drivers={driver}
+          onClose={() => {
+            setPickUpForm(false);
+            resetForm();
+          }}
+          submitPickupRequest={submitPickupRequest}
+          selectedDriver={selectedDriver}
+          setSelectedDriver={setSelectedDriver}
         />
       )}
     </>
