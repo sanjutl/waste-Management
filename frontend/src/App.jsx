@@ -14,6 +14,7 @@ import UserOrder from "./components/UserOrder/UserOrder";
 import DriveHome from "./components/DriverHomePage/DriveHome";
 import UserList from "./components/UserList";
 import Driverregister from "./components/Driverregister";
+import PartnerRegister from "./components/PartnerRegister/PartnerRegister";
 import PartnerandOrders from "./components/PartnerandOrders";
 
 function App() {
@@ -27,6 +28,8 @@ function App() {
         <Route path="/userhomemain/:userId" element={<UserMainHome />} />
         <Route path="/userorder/:userId" element={<UserOrder />} />
         <Route path="/driver/:userName" element={<DriveHome />} />
+        <Route path="/partner-register" element={<PartnerRegister />} />
+
 
 
 
